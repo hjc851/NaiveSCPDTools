@@ -5,7 +5,8 @@ import me.haydencheers.nscpdt.Sequences
 import kotlin.math.max
 
 class TokenEditDistanceSCPDT: AbstractTokenSCPDT() {
-    override fun compareTokenisedFiles(lhs: List<Token>, rhs: List<Token>): Double {
+
+    override fun compareFileRepresentations(lhs: List<Token>, rhs: List<Token>): Double {
         val distance = Sequences.editDistance(lhs, rhs, TokenTypeBiPredicate)
 
         val lsize = lhs.size

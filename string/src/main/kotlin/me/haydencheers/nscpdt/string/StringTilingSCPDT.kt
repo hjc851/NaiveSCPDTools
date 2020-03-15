@@ -4,18 +4,18 @@ import me.haydencheers.nscpdt.Sequences
 import me.haydencheers.nscpdt.string.charutil.CharBiPredicate
 import me.haydencheers.nscpdt.string.charutil.CharSequenceListAdapter
 
-class StringTilingSCPDT(val threshold: Int = 20): AbstractStringSCPDT() {
-    override fun compareFiles(lstr: CharSequence, rstr: CharSequence): Double {
+class StringTilingSCPDT(private val threshold: Int = 20): AbstractStringSCPDT() {
 
-        var lsize = lstr.length
-        var rsize = rstr.length
+    override fun compareFileRepresentations(lhs: CharSequence, rhs: CharSequence): Double {
+        var lsize = lhs.length
+        var rsize = rhs.length
         var matched = 0
 
         var loffset = 0
         var roffset = 0
 
-        val ladapter = CharSequenceListAdapter(lstr)
-        val radapter = CharSequenceListAdapter(rstr)
+        val ladapter = CharSequenceListAdapter(lhs)
+        val radapter = CharSequenceListAdapter(rhs)
 
         while (loffset < lsize && roffset < rsize) {
 

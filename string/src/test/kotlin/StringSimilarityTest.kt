@@ -10,17 +10,18 @@ import kotlin.streams.toList
 
 class StringSimilarityTest: AbstractNaiveSCPDTTestCase() {
 
+    val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/SENG1110A12017_Seeded/All")
+//        val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/COMP2240 2018 A1 A2 A3/COMP2240_18_A1_Dataset")
+
     @Test
     fun testEditDistance() {
         val tool = StringEditDistanceSCPDT()
-        val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/COMP2240 2018 A1 A2 A3/COMP2240_18_A1_Dataset")
         test(tool, root)
     }
 
     @Test
     fun testTiling() {
         val tool = StringTilingSCPDT()
-        val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/COMP2240 2018 A1 A2 A3/COMP2240_18_A1_Dataset")
         test(tool, root)
     }
 }

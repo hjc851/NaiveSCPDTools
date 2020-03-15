@@ -16,6 +16,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile project(":string")
     compile project(":token")
+    compile project(":tree")
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

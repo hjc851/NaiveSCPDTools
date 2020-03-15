@@ -3,8 +3,9 @@ package me.haydencheers.nscpdt.token
 import com.github.javaparser.Token
 import me.haydencheers.nscpdt.Sequences
 
-class TokenTilingSCPDT(val threshold: Int = 12): AbstractTokenSCPDT() {
-    override fun compareTokenisedFiles(lhs: List<Token>, rhs: List<Token>): Double {
+class TokenTilingSCPDT(private val threshold: Int = 12): AbstractTokenSCPDT() {
+
+    override fun compareFileRepresentations(lhs: List<Token>, rhs: List<Token>): Double {
         var lsize = lhs.size
         var rsize = rhs.size
         var matched = 0
