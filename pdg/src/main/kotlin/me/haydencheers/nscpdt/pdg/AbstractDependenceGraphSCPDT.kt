@@ -3,7 +3,6 @@ package me.haydencheers.nscpdt.pdg
 import com.github.javaparser.JavaParser
 import me.haydencheers.nscpdt.AbstractNaiveSCPDT
 import me.haydencheers.nscpdt.pdg.util.ASTUtil
-import me.haydencheers.nscpdt.pdg.util.PDGBuilder
 import org.graphstream.graph.Graph
 import java.nio.charset.Charset
 import java.nio.file.Path
