@@ -17,13 +17,14 @@ import kotlin.streams.toList
 
 class PDGTest {
 
-    val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/SENG1110A12017_Seeded/All")
+    val root = Paths.get("/Users/haydencheers/Desktop/PhD/Data Sets/COMP2240_A1_2018_L1-5Variants")
     val tool = ProgramDependenceGraphSCPDT()
 
     @Test
     fun testSim() {
         val submissions = Files.list(root)
             .filter { Files.isDirectory(it) }
+            .filter { it.fileName.toString().contains("-L") }
             .use { it.toList() }
 
         val count = submissions.count().toDouble()

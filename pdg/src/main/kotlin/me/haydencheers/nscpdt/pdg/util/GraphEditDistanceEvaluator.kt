@@ -48,7 +48,7 @@ object GraphEditDistanceEvaluator {
     }
 
     private fun getRelabelCost(node1: Node, node2: Node, subCost: Double): Double {
-        return if (node1 != node2) subCost
+        return if (!equals(node1, node2)) subCost
         else 0.0
     }
 
@@ -92,7 +92,7 @@ object GraphEditDistanceEvaluator {
     }
 
     private fun getEdgeEditCost(edge1: Edge, edge2: Edge, subCost: Double): Double {
-        return (if (edge1 == edge2) 0.0 else subCost)
+        return (if (equals(edge1, edge2)) 0.0 else subCost)
     }
 
     private fun getEdgeInsertCost(i: Int, j: Int, insCost: Double): Double {
@@ -117,5 +117,37 @@ object GraphEditDistanceEvaluator {
         return if (i == j) {
             delCost
         } else java.lang.Double.MAX_VALUE
+    }
+
+    //
+    //  Element Equals
+    //
+
+    fun equals(lhs: Node, rhs: Node): Boolean {
+        val ltype = lhs.getAttribute<String>("type")
+        val lvarscope = lhs.getAttribute<String>("pdg.varscope")
+        val lnodetype = lhs.getAttribute<String>("pdg.nodetype")
+
+        val rtype = rhs.getAttribute<String>("type")
+        val rvarscope = rhs.getAttribute<String>("pdg.varscope")
+        val rnodetype = rhs.getAttribute<String>("pdg.nodetype")
+
+        return ltype == rtype &&
+                lvarscope == rvarscope &&
+                lnodetype == rnodetype
+    }
+
+    fun equals(lhs: Edge, rhs: Edge): Boolean {
+        val ltype = lhs.getAttribute<String>("type")
+        val lsnoderef = lhs.getAttribute<String>("pdg.snoderef")
+        val lfnoderef = lhs.getAttribute<String>("pdg.fnoderef")
+
+        val rtype = rhs.getAttribute<String>("type")
+        val rsnoderef = rhs.getAttribute<String>("pdg.snoderef")
+        val rfnoderef = rhs.getAttribute<String>("pdg.fnoderef")
+
+        return ltype == rtype &&
+                lsnoderef == rsnoderef &&
+                lfnoderef == rfnoderef
     }
 }

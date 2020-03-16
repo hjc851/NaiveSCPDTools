@@ -9,6 +9,7 @@ import com.github.javaparser.ast.Node as ASTNode
 
 val CONTROL = "CONTROL"
 val DATA = "DATA"
+
 val STMTEXPR = "STMTEXPR"
 
 class BuilderContext {
@@ -40,12 +41,22 @@ class BuilderContext {
     fun makeControlDependency(from: Node, to: Node): Edge {
         val edge = graph.addEdge<Edge>(makeid(), from, to, true)
         edge.setAttribute("ui.class", CONTROL)
+
+        edge.setAttribute("type", CONTROL)
+        edge.setAttribute("pdg.snoderef", from.getAttribute<String>("edgeref"))
+        edge.setAttribute("pdg.fnoderef", to.getAttribute<String>("edgeref"))
+
         return edge
     }
 
     fun makeDataDependency(from: Node, to: Node): Edge {
         val edge = graph.addEdge<Edge>(makeid(), from, to, true)
         edge.setAttribute("ui.class", DATA)
+
+        edge.setAttribute("type", DATA)
+        edge.setAttribute("pdg.snoderef", from.getAttribute<String>("edgeref"))
+        edge.setAttribute("pdg.fnoderef", to.getAttribute<String>("edgeref"))
+
         return edge
     }
 
@@ -66,14 +77,11 @@ class BuilderContext {
         }
 
         if (!globalScope.lookupTable.containsKey(name)) {
-            val variable =
-                Variable(name, VariableScope.EXTERNAL)
+            val variable = Variable(name, VariableScope.EXTERNAL)
             val node = makeNodeForVariable(variable)
-            graph.addEdge<Edge>(makeid(), "0", node.id, true).apply {
-                this.setAttribute("ui.class", CONTROL)
-            }
-            globalScope.lookupTable[name] =
-                    VariableHolder(variable, node.id)
+            val root = graph.getNode<Node>("0")
+            makeControlDependency(root, node)
+            globalScope.lookupTable[name] = VariableHolder(variable, node.id)
         }
 
         return globalScope.lookupTable[name]!!
@@ -83,7 +91,7 @@ class BuilderContext {
         val lookupTable = mutableMapOf<String, VariableHolder>()
     }
 
-    class VariableHolder(
+    class VariableHolder (
         val variable: Variable,
         var currentNodeId: String
     )
@@ -92,17 +100,24 @@ class BuilderContext {
         val node = graph.addNode<Node>(makeid())
         node.setAttribute("ui.label", variable.name)
         node.setAttribute("ui.class", variable.scope.name)
+        node.setAttribute("type", "varnode")
+        node.setAttribute("pdg.varscope", variable.scope.name)
+        node.setAttribute("edgeref", "varnode-${variable.scope.name}")
         return node
     }
 
     private val nodeLookup = Hashtable<Any, Node>()
-
     fun getGraphNodeForTreeNode(astnode: ASTNode, label: String? = null): Node {
         val label = label ?: astnode.toString()
         if (!nodeLookup.contains(astnode)) {
             val node = graph.addNode<Node>(makeid())
             node.setAttribute("ui.class", STMTEXPR)
-            node.setAttribute("ui.label", astnode.toString())
+            node.setAttribute("ui.label", label)
+
+            node.setAttribute("type", "stmtnode")
+            node.setAttribute("pdg.nodetype", astnode.javaClass.name)
+            node.setAttribute("edgeref", "stmtnode-${astnode.javaClass.name}")
+
             nodeLookup[astnode] = node
         }
 
