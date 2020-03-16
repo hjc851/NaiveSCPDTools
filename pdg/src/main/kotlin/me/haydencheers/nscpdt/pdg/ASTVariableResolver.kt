@@ -119,11 +119,11 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: ArrayCreationExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     override fun visit(n: ArrayInitializerExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     override fun visit(n: AssignExpr?, arg: BuilderContext?): Variable? {
@@ -131,7 +131,7 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: BinaryExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     override fun visit(n: CastExpr?, arg: BuilderContext?): Variable? {
@@ -150,8 +150,18 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
         return n?.inner?.accept(this, arg)
     }
 
-    override fun visit(n: FieldAccessExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun visit(n: FieldAccessExpr, arg: BuilderContext): Variable? {
+
+        val scope = n.scope.accept(this, arg)
+
+        if (scope != null) {
+            return when (scope.scope) {
+                VariableScope.LOCAL -> arg.lookupOrCreateVariableByName(scope.name).variable
+                else -> Variable(n.nameAsString, VariableScope.COMPUTED)
+            }
+        }
+
+        return null
     }
 
     override fun visit(n: InstanceOfExpr?, arg: BuilderContext?): Variable? {
@@ -186,8 +196,8 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
         return null
     }
 
-    override fun visit(n: MethodCallExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun visit(n: MethodCallExpr, arg: BuilderContext): Variable? {
+        return null
     }
 
     override fun visit(n: NameExpr, arg: BuilderContext): Variable? {
@@ -199,15 +209,17 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: ThisExpr?, arg: BuilderContext?): Variable? {
-        return Variable("this", VariableScope.LOCAL)
+//        return Variable("this", VariableScope.LOCAL)
+        return null
     }
 
     override fun visit(n: SuperExpr?, arg: BuilderContext?): Variable? {
-        return Variable("this", VariableScope.LOCAL)
+//        return Variable("this", VariableScope.LOCAL)
+        return null
     }
 
-    override fun visit(n: UnaryExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun visit(n: UnaryExpr, arg: BuilderContext): Variable? {
+        return n.expression.accept(this, arg)
     }
 
     override fun visit(n: VariableDeclarationExpr, arg: BuilderContext): Variable? {
@@ -231,7 +243,8 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: ExplicitConstructorInvocationStmt?, arg: BuilderContext?): Variable? {
-        return Variable("this", VariableScope.LOCAL)
+//        return Variable("this", VariableScope.LOCAL)
+        return null
     }
 
     override fun visit(n: LocalClassDeclarationStmt?, arg: BuilderContext?): Variable? {

@@ -67,6 +67,9 @@ class BuilderContext {
         if (!globalScope.lookupTable.containsKey(name)) {
             val variable = Variable(name, VariableScope.EXTERNAL)
             val node = makeNodeForVariable(variable)
+            graph.addEdge<Edge>(makeid(), "0", node.id, true).apply {
+                this.setAttribute("ui.class", CONTROL)
+            }
             globalScope.lookupTable[name] = VariableHolder(variable, node.id)
         }
 

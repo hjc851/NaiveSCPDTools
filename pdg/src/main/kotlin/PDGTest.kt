@@ -3,6 +3,7 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.*
 import me.haydencheers.nscpdt.ProjectListing
 import me.haydencheers.nscpdt.pdg.PDGBuilder
+import org.graphstream.ui.view.Viewer
 import org.junit.Test
 import java.nio.charset.Charset
 import java.nio.file.Files
@@ -12,9 +13,9 @@ import kotlin.streams.toList
 
 class PDGTest {
 
-    val root = Paths.get("/Users/haydencheers/Desktop/PhD/Data Sets/SENG1110A12017/All")
+    val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/SENG1110A12017_Seeded/All")
 
-    @Test
+//    @Test
     fun test() {
         val submissions = Files.list(root)
             .filter { Files.isDirectory(it) && !Files.isHidden(it) }
@@ -35,12 +36,20 @@ class PDGTest {
 
                         for (constructor in type.constructors) {
                             val graph = PDGBuilder.build(constructor)
-                            Unit
+                            if (graph.nodeCount > 10) {
+                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
+                                print("press enter >")
+                                readLine()
+                            }
                         }
 
                         for (method in type.methods) {
                             val graph = PDGBuilder.build(method)
-                            Unit
+                            if (graph.nodeCount > 10) {
+                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
+                                print("press enter >")
+                                readLine()
+                            }
                         }
                     }
 
@@ -49,6 +58,7 @@ class PDGTest {
                 }
             }
         }
+
     }
 
     fun findAllTypes(cu: CompilationUnit): List<TypeDeclaration<*>> {
@@ -68,4 +78,9 @@ class PDGTest {
 
         return types
     }
+}
+
+fun main(args: Array<String>) {
+    val test = PDGTest()
+    test.test()
 }
