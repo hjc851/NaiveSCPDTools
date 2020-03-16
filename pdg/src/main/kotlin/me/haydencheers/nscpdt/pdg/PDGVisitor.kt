@@ -18,36 +18,35 @@ object PDGVisitor: VoidVisitor<BuilderContext> {
         }
     }
 
-    override fun visit(n: AnnotationDeclaration, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun visit(n: AnnotationDeclaration, ctx: BuilderContext) {}
 
-    override fun visit(n: AnnotationMemberDeclaration, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun visit(n: AnnotationMemberDeclaration, ctx: BuilderContext) {}
 
     override fun visit(n: ArrayAccessExpr, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        n.name.accept(this, ctx)
+        n.index.accept(this, ctx)
     }
 
-    override fun visit(n: ArrayCreationExpr, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun visit(n: ArrayCreationExpr, ctx: BuilderContext) {}
 
     override fun visit(n: ArrayCreationLevel, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        n.dimension.ifPresent { it.accept(this, ctx) }
     }
 
     override fun visit(n: ArrayInitializerExpr, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        n.values.accept(this, ctx)
     }
 
-    override fun visit(n: ArrayType, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun visit(n: ArrayType, ctx: BuilderContext) {}
 
     override fun visit(n: AssertStmt, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val node = ctx.getGraphNodeForTreeNode(n)
+        ctx.makeControlDependency(ctx.lastControlNode, node)
+
+        ctx.lastControlNode = node
+
+        n.check.accept(this, ctx)
+        n.message.ifPresent { it.accept(this, ctx) }
     }
 
     override fun visit(n: AssignExpr, ctx: BuilderContext) {
@@ -191,10 +190,10 @@ object PDGVisitor: VoidVisitor<BuilderContext> {
 
     override fun visit(n: IfStmt, ctx: BuilderContext) {
         val node = ctx.getGraphNodeForTreeNode(n, "if (${n.condition})")
+        ctx.makeControlDependency(ctx.lastControlNode, node)
+
         ctx.lastControlNode = node
-
         n.condition.accept(this, ctx)
-
         n.thenStmt.accept(this, ctx)
         n.elseStmt.ifPresent {
             ctx.lastControlNode = node
@@ -205,7 +204,7 @@ object PDGVisitor: VoidVisitor<BuilderContext> {
     override fun visit(n: ImportDeclaration, ctx: BuilderContext) {}
 
     override fun visit(n: InitializerDeclaration, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        n.body.accept(this, ctx)
     }
 
     override fun visit(n: InstanceOfExpr, ctx: BuilderContext) {
@@ -223,7 +222,12 @@ object PDGVisitor: VoidVisitor<BuilderContext> {
     }
 
     override fun visit(n: LambdaExpr, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val node = ctx.getGraphNodeForTreeNode(n, "lambda")
+        ctx.makeControlDependency(ctx.lastControlNode, node)
+
+        n.parameters.accept(this, ctx)
+        n.expressionBody.ifPresent { it.accept(this, ctx) }
+        n.body.accept(this, ctx)
     }
 
     override fun visit(n: LineComment, ctx: BuilderContext) {}
@@ -389,13 +393,26 @@ object PDGVisitor: VoidVisitor<BuilderContext> {
     override fun visit(n: VarType, ctx: BuilderContext) {}
 
     override fun visit(switchExpr: SwitchExpr, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val lastcn = ctx.lastControlNode
+        val node = ctx.getGraphNodeForTreeNode(switchExpr, "switch (${switchExpr.selector})")
+        ctx.makeControlDependency(ctx.lastControlNode, node)
+
+        ctx.lastControlNode = node
+        switchExpr.selector.accept(this, ctx)
+        switchExpr.entries.forEach { it.accept(this, ctx) }
+        ctx.lastControlNode = lastcn
     }
 
     override fun visit(n: TextBlockLiteralExpr, ctx: BuilderContext) {}
 
     override fun visit(yieldStmt: YieldStmt, ctx: BuilderContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val lastcn = ctx.lastControlNode
+        val node = ctx.getGraphNodeForTreeNode(yieldStmt)
+        ctx.makeControlDependency(ctx.lastControlNode, node)
+
+        ctx.lastControlNode = node
+        yieldStmt.expression.accept(this, ctx)
+        ctx.lastControlNode = lastcn
     }
 
     override fun visit(n: UnparsableStmt, ctx: BuilderContext) {}

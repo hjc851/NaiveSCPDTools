@@ -115,7 +115,7 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: ArrayAccessExpr?, arg: BuilderContext?): Variable? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return null
     }
 
     override fun visit(n: ArrayCreationExpr?, arg: BuilderContext?): Variable? {
