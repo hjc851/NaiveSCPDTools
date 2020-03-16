@@ -4,7 +4,7 @@ import me.haydencheers.nscpdt.Sequences
 import me.haydencheers.nscpdt.string.charutil.CharBiPredicate
 import me.haydencheers.nscpdt.string.charutil.CharSequenceListAdapter
 
-class StringTilingSCPDT(private val threshold: Int = 20): AbstractStringSCPDT() {
+class StringTilingSCPDT(private val threshold: Int = 20) : AbstractStringSCPDT() {
 
     override fun compareFileRepresentations(lhs: CharSequence, rhs: CharSequence): Double {
         var lsize = lhs.length

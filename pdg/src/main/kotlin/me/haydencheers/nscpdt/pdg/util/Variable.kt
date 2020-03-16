@@ -1,6 +1,6 @@
-package me.haydencheers.nscpdt.pdg
+package me.haydencheers.nscpdt.pdg.util
 
-class Variable (
+class Variable(
     val name: String,
     val scope: VariableScope
 )

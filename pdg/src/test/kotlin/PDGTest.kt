@@ -1,10 +1,8 @@
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
-import com.github.javaparser.ast.body.*
+import com.github.javaparser.ast.body.TypeDeclaration
 import me.haydencheers.nscpdt.ProjectListing
-import me.haydencheers.nscpdt.pdg.PDGBuilder
-import org.graphstream.ui.view.Viewer
-import org.junit.Test
+import me.haydencheers.nscpdt.pdg.util.PDGBuilder
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -15,7 +13,7 @@ class PDGTest {
 
     val root = Paths.get("/home/haydencheers/Desktop/PhD Data Sets/SENG1110A12017_Seeded/All")
 
-//    @Test
+    //    @Test
     fun test() {
         val submissions = Files.list(root)
             .filter { Files.isDirectory(it) && !Files.isHidden(it) }
@@ -36,20 +34,20 @@ class PDGTest {
 
                         for (constructor in type.constructors) {
                             val graph = PDGBuilder.build(constructor)
-                            if (graph.nodeCount > 10) {
-                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
-                                print("press enter >")
-                                readLine()
-                            }
+//                            if (graph.nodeCount > 10) {
+//                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
+//                                print("press enter >")
+//                                readLine()
+//                            }
                         }
 
                         for (method in type.methods) {
                             val graph = PDGBuilder.build(method)
-                            if (graph.nodeCount > 10) {
-                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
-                                print("press enter >")
-                                readLine()
-                            }
+//                            if (graph.nodeCount > 10) {
+//                                graph.display().apply { closeFramePolicy = Viewer.CloseFramePolicy.CLOSE_VIEWER }
+//                                print("press enter >")
+//                                readLine()
+//                            }
                         }
                     }
 

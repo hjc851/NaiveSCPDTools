@@ -1,6 +1,6 @@
 package me.haydencheers.nscpdt.string.charutil
 
-class CharSequenceListAdapter(val cs: CharSequence): List<Char> {
+class CharSequenceListAdapter(val cs: CharSequence) : List<Char> {
     override val size: Int
         get() = cs.length
 

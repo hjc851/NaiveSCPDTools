@@ -3,7 +3,7 @@ package frontend
 import me.haydencheers.nscpdt.NaiveSCPDT
 import me.haydencheers.nscpdt.tree.TreeEditDistanceSCPDT
 
-object NaiveTreeEditDistance: AbstractApplicationFrontend() {
+object NaiveTreeEditDistance : AbstractApplicationFrontend() {
     override val tool: NaiveSCPDT
         get() = TreeEditDistanceSCPDT()
 

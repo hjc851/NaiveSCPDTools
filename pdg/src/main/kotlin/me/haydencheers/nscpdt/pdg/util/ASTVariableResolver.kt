@@ -1,4 +1,4 @@
-package me.haydencheers.nscpdt.pdg
+package me.haydencheers.nscpdt.pdg.util
 
 import com.github.javaparser.ast.*
 import com.github.javaparser.ast.body.*
@@ -9,7 +9,7 @@ import com.github.javaparser.ast.stmt.*
 import com.github.javaparser.ast.type.*
 import com.github.javaparser.ast.visitor.GenericVisitor
 
-object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
+object ASTVariableResolver : GenericVisitor<Variable?, BuilderContext> {
     override fun visit(n: CompilationUnit?, arg: BuilderContext?): Variable? {
         return null
     }
@@ -67,7 +67,10 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
     }
 
     override fun visit(n: Parameter, arg: BuilderContext): Variable? {
-        return Variable(n.nameAsString, VariableScope.LOCAL)
+        return Variable(
+            n.nameAsString,
+            VariableScope.LOCAL
+        )
     }
 
     override fun visit(n: InitializerDeclaration?, arg: BuilderContext?): Variable? {
@@ -157,7 +160,10 @@ object ASTVariableResolver: GenericVisitor<Variable?, BuilderContext> {
         if (scope != null) {
             return when (scope.scope) {
                 VariableScope.LOCAL -> arg.lookupOrCreateVariableByName(scope.name).variable
-                else -> Variable(n.nameAsString, VariableScope.COMPUTED)
+                else -> Variable(
+                    n.nameAsString,
+                    VariableScope.COMPUTED
+                )
             }
         }
 

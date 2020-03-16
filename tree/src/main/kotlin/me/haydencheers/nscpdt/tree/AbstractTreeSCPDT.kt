@@ -8,7 +8,7 @@ import me.haydencheers.nscpdt.AbstractNaiveSCPDT
 import java.nio.charset.Charset
 import java.nio.file.Path
 
-abstract class AbstractTreeSCPDT: AbstractNaiveSCPDT<Node<StringNodeData>>() {
+abstract class AbstractTreeSCPDT : AbstractNaiveSCPDT<Node<StringNodeData>>() {
 
     val bsparser = BracketStringInputParser()
 

@@ -124,7 +124,14 @@ object Sequences {
 //        return Result(row, col, result.size)
 //    }
 
-    fun <T> findFCS(a: List<T>, b: List<T>, aoffset: Int, boffset: Int, minLength: Int, predicate: BiPredicate<T, T>): Result {
+    fun <T> findFCS(
+        a: List<T>,
+        b: List<T>,
+        aoffset: Int,
+        boffset: Int,
+        minLength: Int,
+        predicate: BiPredicate<T, T>
+    ): Result {
         var l = aoffset
         while (l < a.size) {
 
@@ -143,7 +150,7 @@ object Sequences {
                     }
 
                     if (length >= minLength)
-                        return Result(l-length, r-length, length)
+                        return Result(l - length, r - length, length)
 
                     l = _l
                     r = _r
@@ -192,7 +199,7 @@ object Sequences {
 //        return Result(-1, -1, -1)
 //    }
 
-    data class Result (
+    data class Result(
         val lindex: Int,
         val rindex: Int,
         val length: Int
@@ -225,7 +232,7 @@ object Sequences {
             m = rhs.size
         }
 
-        val p = IntArray(n+1)
+        val p = IntArray(n + 1)
 
         // indexes into strings left and right
         var i = 0
@@ -244,13 +251,13 @@ object Sequences {
         j = 1
         while (j <= m) {
             upperLeft = p[0]
-            rightJ = rhs[j-1]
+            rightJ = rhs[j - 1]
             p[0] = j
 
             i = 1
             while (i <= n) {
                 upper = p[i]
-                cost = if (comp.test(lhs[i-1], rightJ)) 0 else 1
+                cost = if (comp.test(lhs[i - 1], rightJ)) 0 else 1
 
                 // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
                 p[i] = Math.min(Math.min(p[i - 1] + 1, p[i] + 1), upperLeft + cost)

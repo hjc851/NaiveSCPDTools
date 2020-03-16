@@ -1,4 +1,4 @@
-package me.haydencheers.nscpdt.pdg
+package me.haydencheers.nscpdt.pdg.util
 
 import com.github.javaparser.ast.*
 import com.github.javaparser.ast.body.*
@@ -9,7 +9,7 @@ import com.github.javaparser.ast.stmt.*
 import com.github.javaparser.ast.type.*
 import com.github.javaparser.ast.visitor.VoidVisitor
 
-object PDGVisitor: VoidVisitor<BuilderContext> {
+object PDGVisitor : VoidVisitor<BuilderContext> {
     override fun visit(n: NodeList<*>, ctx: BuilderContext) {
         val _lastControlNode = ctx.lastControlNode
         for (node in n) {

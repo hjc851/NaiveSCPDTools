@@ -13,7 +13,7 @@ abstract class AbstractNaiveSCPDTTestCase {
             .use { it.toList() }
 
         val count = submissions.count().toDouble()
-        val compcount = ((count/2.0) * (count-1)).toInt()
+        val compcount = ((count / 2.0) * (count - 1)).toInt()
         val sem = Semaphore(compcount)
 
         var sum = 0.0
@@ -23,7 +23,7 @@ abstract class AbstractNaiveSCPDTTestCase {
         for (l in 0 until submissions.size) {
             val lsub = submissions[l]
 
-            for (r in l+1 until submissions.size) {
+            for (r in l + 1 until submissions.size) {
                 val rsub = submissions[r]
 
                 sem.acquire()
@@ -39,9 +39,9 @@ abstract class AbstractNaiveSCPDTTestCase {
             }
         }
 
-        println("Awaiting ${compcount-sem.availablePermits()} permits")
+        println("Awaiting ${compcount - sem.availablePermits()} permits")
         while (!sem.tryAcquire(compcount, 5, TimeUnit.SECONDS)) {
-            println("Awaiting ${compcount-sem.availablePermits()} permits")
+            println("Awaiting ${compcount - sem.availablePermits()} permits")
         }
 
         results.sortedByDescending { it.third }

@@ -4,7 +4,7 @@ import com.github.javaparser.Token
 import me.haydencheers.nscpdt.Sequences
 import kotlin.math.max
 
-class TokenEditDistanceSCPDT: AbstractTokenSCPDT() {
+class TokenEditDistanceSCPDT : AbstractTokenSCPDT() {
 
     override fun compareFileRepresentations(lhs: List<Token>, rhs: List<Token>): Double {
         val distance = Sequences.editDistance(lhs, rhs, TokenTypeBiPredicate)

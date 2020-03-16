@@ -3,7 +3,7 @@ package me.haydencheers.nscpdt.string
 import org.apache.commons.text.similarity.LevenshteinDistance
 import kotlin.math.max
 
-class StringEditDistanceSCPDT: AbstractStringSCPDT() {
+class StringEditDistanceSCPDT : AbstractStringSCPDT() {
 
     private val lev = LevenshteinDistance()
 

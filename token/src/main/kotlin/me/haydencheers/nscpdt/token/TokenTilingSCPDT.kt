@@ -3,7 +3,7 @@ package me.haydencheers.nscpdt.token
 import com.github.javaparser.Token
 import me.haydencheers.nscpdt.Sequences
 
-class TokenTilingSCPDT(private val threshold: Int = 12): AbstractTokenSCPDT() {
+class TokenTilingSCPDT(private val threshold: Int = 12) : AbstractTokenSCPDT() {
 
     override fun compareFileRepresentations(lhs: List<Token>, rhs: List<Token>): Double {
         var lsize = lhs.size
@@ -19,8 +19,8 @@ class TokenTilingSCPDT(private val threshold: Int = 12): AbstractTokenSCPDT() {
             if (lcs.length >= threshold) {
                 matched += lcs.length
 
-                val lseq = lhs.subList(lcs.lindex, lcs.lindex+lcs.length)
-                val rseq = rhs.subList(lcs.rindex, lcs.rindex+lcs.length)
+                val lseq = lhs.subList(lcs.lindex, lcs.lindex + lcs.length)
+                val rseq = rhs.subList(lcs.rindex, lcs.rindex + lcs.length)
 
                 loffset = lcs.lindex + lcs.length + 1
                 roffset = lcs.rindex + lcs.length + 1

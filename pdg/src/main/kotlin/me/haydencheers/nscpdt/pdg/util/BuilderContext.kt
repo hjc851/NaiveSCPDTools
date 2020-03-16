@@ -1,10 +1,9 @@
-package me.haydencheers.nscpdt.pdg
+package me.haydencheers.nscpdt.pdg.util
 
 import com.github.javaparser.ast.body.CallableDeclaration
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.MultiGraph
-import java.lang.Exception
 import java.util.*
 import com.github.javaparser.ast.Node as ASTNode
 
@@ -30,9 +29,11 @@ class BuilderContext {
     }
 
     fun declareLocal(nameAsString: String): Node {
-        val variable = Variable(nameAsString, VariableScope.LOCAL)
+        val variable =
+            Variable(nameAsString, VariableScope.LOCAL)
         val node = makeNodeForVariable(variable)
-        scopes.peek().lookupTable[nameAsString] = VariableHolder(variable, node.id)
+        scopes.peek().lookupTable[nameAsString] =
+                VariableHolder(variable, node.id)
         return node
     }
 
@@ -65,12 +66,14 @@ class BuilderContext {
         }
 
         if (!globalScope.lookupTable.containsKey(name)) {
-            val variable = Variable(name, VariableScope.EXTERNAL)
+            val variable =
+                Variable(name, VariableScope.EXTERNAL)
             val node = makeNodeForVariable(variable)
             graph.addEdge<Edge>(makeid(), "0", node.id, true).apply {
                 this.setAttribute("ui.class", CONTROL)
             }
-            globalScope.lookupTable[name] = VariableHolder(variable, node.id)
+            globalScope.lookupTable[name] =
+                    VariableHolder(variable, node.id)
         }
 
         return globalScope.lookupTable[name]!!
@@ -80,7 +83,7 @@ class BuilderContext {
         val lookupTable = mutableMapOf<String, VariableHolder>()
     }
 
-    class VariableHolder (
+    class VariableHolder(
         val variable: Variable,
         var currentNodeId: String
     )

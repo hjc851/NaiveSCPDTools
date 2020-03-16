@@ -3,10 +3,8 @@ package frontend
 import me.haydencheers.nscpdt.NaiveSCPDT
 import me.haydencheers.nscpdt.string.StringEditDistanceSCPDT
 import me.haydencheers.nscpdt.string.StringTilingSCPDT
-import java.nio.file.Files
-import java.nio.file.Paths
 
-object NaiveStringEditDistance: AbstractApplicationFrontend() {
+object NaiveStringEditDistance : AbstractApplicationFrontend() {
 
     override val tool: NaiveSCPDT
         get() = StringEditDistanceSCPDT()
@@ -17,7 +15,7 @@ object NaiveStringEditDistance: AbstractApplicationFrontend() {
     }
 }
 
-object NaiveStringTiling: AbstractApplicationFrontend() {
+object NaiveStringTiling : AbstractApplicationFrontend() {
 
     override val tool: NaiveSCPDT
         get() {

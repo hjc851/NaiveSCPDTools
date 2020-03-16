@@ -4,7 +4,7 @@ import me.haydencheers.nscpdt.common.HungarianAlgorithm
 import java.nio.file.Path
 import kotlin.math.max
 
-abstract class AbstractNaiveSCPDT<T>: NaiveSCPDT {
+abstract class AbstractNaiveSCPDT<T> : NaiveSCPDT {
 
     protected abstract fun transformFile(path: Path): T
     protected abstract fun fallbackValueForFile(path: Path): T
@@ -20,15 +20,17 @@ abstract class AbstractNaiveSCPDT<T>: NaiveSCPDT {
         val similarities = mutableMapOf<Path, MutableMap<Path, Double>>()
 
         for (lfile in lsub.sources) {
-            val ltransformed = try { transformFile(lfile) }
-            catch (e: Exception) {
+            val ltransformed = try {
+                transformFile(lfile)
+            } catch (e: Exception) {
                 e.printStackTrace()
                 fallbackValueForFile(lfile)
             }
 
             for (rfile in rsub.sources) {
-                val rtransformed = try { transformFile(rfile) }
-                catch (e: Exception) {
+                val rtransformed = try {
+                    transformFile(rfile)
+                } catch (e: Exception) {
                     e.printStackTrace()
                     fallbackValueForFile(rfile)
                 }

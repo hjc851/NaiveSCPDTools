@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.streams.toList
 
-data class ProjectListing (
+data class ProjectListing(
     val root: Path,
     val sources: List<Path>
 ) {

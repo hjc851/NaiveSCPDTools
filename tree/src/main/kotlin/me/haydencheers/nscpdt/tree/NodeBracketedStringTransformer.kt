@@ -18,7 +18,7 @@ object NodeBracketedStringTransformer {
         return builder.toString()
     }
 
-    private object BSTransformerVisitor2: VoidVisitorAdapter<StringBuilder>() {
+    private object BSTransformerVisitor2 : VoidVisitorAdapter<StringBuilder>() {
         override fun visit(n: AnnotationDeclaration, arg: StringBuilder) {
             arg.append("{")
             arg.append(n.javaClass.simpleName)

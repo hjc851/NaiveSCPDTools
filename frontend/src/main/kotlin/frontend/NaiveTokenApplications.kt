@@ -3,10 +3,8 @@ package frontend
 import me.haydencheers.nscpdt.NaiveSCPDT
 import me.haydencheers.nscpdt.token.TokenEditDistanceSCPDT
 import me.haydencheers.nscpdt.token.TokenTilingSCPDT
-import java.nio.file.Files
-import java.nio.file.Paths
 
-object NaiveTokenEditDistance: AbstractApplicationFrontend() {
+object NaiveTokenEditDistance : AbstractApplicationFrontend() {
 
     override val tool: NaiveSCPDT
         get() = TokenEditDistanceSCPDT()
@@ -17,7 +15,7 @@ object NaiveTokenEditDistance: AbstractApplicationFrontend() {
     }
 }
 
-object NaiveTokenTiling: AbstractApplicationFrontend() {
+object NaiveTokenTiling : AbstractApplicationFrontend() {
 
     override val tool: NaiveSCPDT
         get() {
