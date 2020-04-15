@@ -76,4 +76,37 @@ abstract class AbstractNaiveSCPDT<T> : NaiveSCPDT {
 
         return sim
     }
+
+    override fun evaluateFileSimilarities(ldir: Path, rdir: Path): List<Triple<Path, Path, Double>> {
+        val lsub = ProjectListing.makeListing(ldir, ".java")
+        val rsub = ProjectListing.makeListing(rdir, ".java")
+
+        if (lsub.sources.isEmpty()) return emptyList()
+        if (rsub.sources.isEmpty()) return emptyList()
+
+        val similarities = mutableListOf<Triple<Path, Path, Double>>()
+
+        for (lfile in lsub.sources) {
+            val ltransformed = try {
+                transformFile(lfile)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                fallbackValueForFile(lfile)
+            }
+
+            for (rfile in rsub.sources) {
+                val rtransformed = try {
+                    transformFile(rfile)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    fallbackValueForFile(rfile)
+                }
+
+                val sim = compareFileRepresentations(ltransformed, rtransformed)
+                similarities.add(Triple(lfile, rfile, sim))
+            }
+        }
+
+        return similarities
+    }
 }

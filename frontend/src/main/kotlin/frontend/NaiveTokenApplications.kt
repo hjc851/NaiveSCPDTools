@@ -28,3 +28,28 @@ object NaiveTokenTiling : AbstractApplicationFrontend() {
         run(args)
     }
 }
+
+object FilewiseNaiveTokenEditDistance : AbstractFilewiseApplicationFrontend() {
+
+    override val tool: NaiveSCPDT
+        get() = TokenEditDistanceSCPDT()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run(args)
+    }
+}
+
+object FilewiseNaiveTokenTiling : AbstractFilewiseApplicationFrontend() {
+
+    override val tool: NaiveSCPDT
+        get() {
+            val threshold = System.getenv("THRESHOLD")?.toIntOrNull() ?: 20
+            return TokenTilingSCPDT(threshold)
+        }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run(args)
+    }
+}

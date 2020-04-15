@@ -12,3 +12,13 @@ object NaiveTreeEditDistance : AbstractApplicationFrontend() {
         run(args)
     }
 }
+
+object FilewiseNaiveTreeEditDistance : AbstractFilewiseApplicationFrontend() {
+    override val tool: NaiveSCPDT
+        get() = TreeEditDistanceSCPDT()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run(args)
+    }
+}

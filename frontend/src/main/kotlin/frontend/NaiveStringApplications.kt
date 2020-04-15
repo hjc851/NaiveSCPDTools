@@ -28,3 +28,28 @@ object NaiveStringTiling : AbstractApplicationFrontend() {
         run(args)
     }
 }
+
+object FilewiseNaiveStringEditDistance : AbstractFilewiseApplicationFrontend() {
+
+    override val tool: NaiveSCPDT
+        get() = StringEditDistanceSCPDT()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run(args)
+    }
+}
+
+object FilewiseNaiveStringTiling : AbstractFilewiseApplicationFrontend() {
+
+    override val tool: NaiveSCPDT
+        get() {
+            val threshold = System.getenv("THRESHOLD")?.toIntOrNull() ?: 20
+            return StringTilingSCPDT(threshold)
+        }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run(args)
+    }
+}

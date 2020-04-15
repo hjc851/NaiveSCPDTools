@@ -12,3 +12,13 @@ object NaivePDGEditDistance: AbstractApplicationFrontend() {
         run(args)
     }
 }
+
+object FilewiseNaivePDFEditDistance: AbstractFilewiseApplicationFrontend() {
+    override val tool: NaiveSCPDT
+        get() = ProgramDependenceGraphSCPDT()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        NaivePDGEditDistance.run(args)
+    }
+}
