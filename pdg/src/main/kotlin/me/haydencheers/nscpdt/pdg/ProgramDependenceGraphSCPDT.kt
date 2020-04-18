@@ -4,6 +4,8 @@ import me.haydencheers.nscpdt.common.HungarianAlgorithm
 import me.haydencheers.nscpdt.pdg.util.GraphEditDistanceEvaluator
 import org.graphstream.graph.Graph
 import java.nio.file.Path
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Semaphore
 import kotlin.math.max
 
 class ProgramDependenceGraphSCPDT: AbstractDependenceGraphSCPDT() {
@@ -13,17 +15,29 @@ class ProgramDependenceGraphSCPDT: AbstractDependenceGraphSCPDT() {
 
         val similarities = Array(lhs.size) { DoubleArray(rhs.size) { 1.0 } }
 
+        val count = lhs.size * rhs.size
+        val sem = Semaphore(count)
+
         for (l in 0 until lhs.size) {
             val lg = lhs[l]
             for (r in 0 until rhs.size) {
-                val rg = rhs[r]
-                val distance = GraphEditDistanceEvaluator.evaluate(lg, rg)
-                val maxSize = max(lg.nodeCount + lg.edgeCount, rg.nodeCount + rg.edgeCount)
+                sem.acquire()
 
-                val sim = 1 - (distance/ maxSize)
-                similarities[l][r] = 1.0 - sim
+                CompletableFuture.runAsync {
+                    val rg = rhs[r]
+                    val distance = GraphEditDistanceEvaluator.evaluate(lg, rg)
+                    val maxSize = max(lg.nodeCount + lg.edgeCount, rg.nodeCount + rg.edgeCount)
+
+                    val sim = 1 - (distance/ maxSize)
+                    similarities[l][r] = 1.0 - sim
+                }.whenComplete { void, throwable ->
+                    throwable?.printStackTrace()
+                    sem.release()
+                }
             }
         }
+
+        sem.acquire(count)
 
         val hung = HungarianAlgorithm(similarities)
         val matches = hung.execute()

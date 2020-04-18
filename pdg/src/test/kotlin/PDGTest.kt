@@ -17,8 +17,25 @@ import kotlin.streams.toList
 
 class PDGTest {
 
-    val root = Paths.get("/Users/haydencheers/Desktop/PhD/Data Sets/COMP2240_A1_2018_L1-5Variants")
+    val root = Paths.get("/media/haydencheers/Data/PrEP/datasets/SENG2050_A1_2020")
     val tool = ProgramDependenceGraphSCPDT()
+
+    @Test
+    fun test2() {
+        val dirs = Files.list(root)
+            .filter { Files.isDirectory(it) && !Files.isHidden(it) }
+            .toList()
+
+        for (l in 0 until dirs.size) {
+            val ldir = dirs[l]
+            for (r in l+1 until dirs.size) {
+                val rdir = dirs[r]
+
+                val sim = tool.evaluateSimilarity(ldir, rdir)
+                println("$l x $r")
+            }
+        }
+    }
 
     @Test
     fun testSim() {

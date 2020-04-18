@@ -1,8 +1,9 @@
 package me.haydencheers.nscpdt
 
-import me.haydencheers.nscpdt.common.HungarianAlgorithm
 import java.nio.file.Path
-import kotlin.math.max
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Semaphore
 
 abstract class AbstractNaiveSCPDT<T> : NaiveSCPDT {
 
@@ -19,61 +20,32 @@ abstract class AbstractNaiveSCPDT<T> : NaiveSCPDT {
 
         val similarities = mutableMapOf<Path, MutableMap<Path, Double>>()
 
-        for (lfile in lsub.sources) {
-            val ltransformed = try {
-                transformFile(lfile)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                fallbackValueForFile(lfile)
-            }
+        val lreps = lsub.sources.map { it to safeTransformFile(it) }
+        val rreps = rsub.sources.map { it to safeTransformFile(it) }
 
-            for (rfile in rsub.sources) {
-                val rtransformed = try {
-                    transformFile(rfile)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    fallbackValueForFile(rfile)
-                }
-
-                val sim = compareFileRepresentations(ltransformed, rtransformed)
-                similarities.getOrPut(lfile) { mutableMapOf() }
-                    .put(rfile, sim)
+        for ((lfile, lrep) in lreps) {
+            for ((rfile, rrep) in rreps) {
+                val sim = compareFileRepresentations(lrep, rrep)
+                similarities.getOrPut(lfile) { mutableMapOf() }[rfile] = sim
+                similarities.getOrPut(rfile) { mutableMapOf() }[lfile] = sim
             }
         }
 
-        val simArr = Array(lsub.sources.size) { DoubleArray(rsub.sources.size) { 100.0 } }
-        for (l in 0 until lsub.sources.size) {
-            val lpath = lsub.sources[l]
+        val lsize = lsub.sources.size
+        val rsize = rsub.sources.size
 
-            for (r in 0 until rsub.sources.size) {
-                val rpath = rsub.sources[r]
+        val lScores = similarities.filter { lsub.sources.contains(it.key) }
+        val rScores = similarities.filter { rsub.sources.contains(it.key) }
 
-                val sim = similarities.getValue(lpath).getValue(rpath)
-                simArr[l][r] = 100.0 - sim
-            }
-        }
+        val lAvgSim = lScores.map { (lfile, scores) ->
+            scores.maxBy { it.value }?.value ?: 0.0
+        }.average()
 
-        val hung = HungarianAlgorithm(simArr)
-        val matches = hung.execute()
+        val rAvgSim = rScores.map { (rfile, scores) ->
+            scores.maxBy { it.value }?.value ?: 0.0
+        }.average()
 
-        val bestMatches = mutableListOf<Triple<Path, Path, Double>>()
-        matches.forEachIndexed { lindex, rindex ->
-            if (rindex != -1) {
-                val lsrc = lsub.sources[lindex]
-                val rsrc = rsub.sources[rindex]
-                val sim = 100.0 - simArr[lindex][rindex]
-
-                bestMatches.add(Triple(lsrc, rsrc, sim))
-            }
-        }
-
-        val maxFileCount = max(lsub.sources.size, rsub.sources.size)
-        val sim = bestMatches.map { it.third }
-            .toTypedArray()
-            .copyOf(maxFileCount)
-            .map { it ?: 0.0 }
-            .average()
-
+        val sim = (lsize * lAvgSim + rsize * rAvgSim) / (lsize + rsize)
         return sim
     }
 
@@ -84,29 +56,27 @@ abstract class AbstractNaiveSCPDT<T> : NaiveSCPDT {
         if (lsub.sources.isEmpty()) return emptyList()
         if (rsub.sources.isEmpty()) return emptyList()
 
+        val lreps = lsub.sources.map { it to safeTransformFile(it) }
+        val rreps = rsub.sources.map { it to safeTransformFile(it) }
+
         val similarities = mutableListOf<Triple<Path, Path, Double>>()
 
-        for (lfile in lsub.sources) {
-            val ltransformed = try {
-                transformFile(lfile)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                fallbackValueForFile(lfile)
-            }
-
-            for (rfile in rsub.sources) {
-                val rtransformed = try {
-                    transformFile(rfile)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    fallbackValueForFile(rfile)
-                }
-
-                val sim = compareFileRepresentations(ltransformed, rtransformed)
+        for ((lfile, lrep) in lreps) {
+            for ((rfile, rrep) in rreps) {
+                val sim = compareFileRepresentations(lrep, rrep)
                 similarities.add(Triple(lfile, rfile, sim))
             }
         }
 
         return similarities
+    }
+
+    private fun safeTransformFile(path: Path): T {
+        return try {
+            transformFile(path)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fallbackValueForFile(path)
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.automation.graph.HungarianAlgorithm
 import org.graphstream.graph.Edge
 import org.graphstream.graph.Graph
 import org.graphstream.graph.Node
+import kotlin.math.max
 
 object GraphEditDistanceEvaluator {
     fun evaluate(g1: Graph, g2: Graph) = evaluate(g1, g2, 3.0, 1.0, 1.0)
@@ -12,6 +13,7 @@ object GraphEditDistanceEvaluator {
         val n = g1.nodeCount
         val m = g2.nodeCount
         val costMatrix = Array(n+m) { DoubleArray(n+m) }
+        val maxsize = max(n, m)
 
         for (i in 0 until n) {
             for (j in 0 until m) {
@@ -31,15 +33,42 @@ object GraphEditDistanceEvaluator {
             }
         }
 
+        val greedyMinCosts = DoubleArray(n+m) { maxsize.toDouble() }
+        val usedIndicies = mutableSetOf<Int>()
+        for (i in 0 until (n+m)) {
+            var minIndex = Int.MAX_VALUE
+            var min = Double.MAX_VALUE
 
-        val assignment = HungarianAlgorithm.hgAlgorithm(costMatrix, "min")
+            val row = costMatrix[i]
 
-        var sum = 0.0
-        for (i in 0 until assignment.size) {
-            sum += costMatrix[assignment[i][0]][assignment[i][1]]
+            for (j in 0 until (n+m)) {
+                if (!usedIndicies.contains(j)) {
+                    if (row[j] < min) {
+                        minIndex = j
+                        min = row[j]
+                    }
+                }
+            }
+
+            if (minIndex != Int.MAX_VALUE) {
+                greedyMinCosts[i] = min
+                usedIndicies.add(minIndex)
+            }
         }
+        val greedySum = greedyMinCosts.sum()
+        return greedySum
 
-        return sum
+//        val assignment = HungarianAlgorithm.hgAlgorithm(costMatrix, "min")
+//
+//        val mins = costMatrix.map { it.min() ?: Double.MAX_VALUE }
+//        val costs = assignment.mapIndexed { index, ints ->  costMatrix[ints[0]][ints[1]] }
+//
+//        var sum = 0.0
+//        for (i in 0 until assignment.size) {
+//            sum += costMatrix[assignment[i][0]][assignment[i][1]]
+//        }
+//
+//        return sum
     }
 
     private fun getSubstituteCost(node1: Node, node2: Node, subCost: Double, insCost: Double, delCost: Double): Double {
@@ -62,6 +91,7 @@ object GraphEditDistanceEvaluator {
 
         val n = edges1.size
         val m = edges2.size
+        val maxsize = max(n, m)
         val edgeCostMatrix = Array(n + m) { DoubleArray(m + n) }
 
         for (i in 0 until n) {
@@ -82,13 +112,38 @@ object GraphEditDistanceEvaluator {
             }
         }
 
-        val assignment = HungarianAlgorithm.hgAlgorithm(edgeCostMatrix, "min")
-        var sum = 0.0
-        for (i in assignment.indices) {
-            sum += edgeCostMatrix[assignment[i][0]][assignment[i][1]]
-        }
+        val greedyMinCosts = DoubleArray(n+m) { maxsize.toDouble() }
+        val usedIndicies = mutableSetOf<Int>()
+        for (i in 0 until (n+m)) {
+            var minIndex = Int.MAX_VALUE
+            var min = Double.MAX_VALUE
 
-        return sum / (n + m)
+            val row = edgeCostMatrix[i]
+
+            for (j in 0 until (n+m)) {
+                if (!usedIndicies.contains(j)) {
+                    if (row[j] < min) {
+                        minIndex = j
+                        min = row[j]
+                    }
+                }
+            }
+
+            if (minIndex != Int.MAX_VALUE) {
+                greedyMinCosts[i] = min
+                usedIndicies.add(minIndex)
+            }
+        }
+        val greedySum = greedyMinCosts.sum()
+        return greedySum / (n+m)
+
+//        val assignment = HungarianAlgorithm.hgAlgorithm(edgeCostMatrix, "min")
+//        var sum = 0.0
+//        for (i in assignment.indices) {
+//            sum += edgeCostMatrix[assignment[i][0]][assignment[i][1]]
+//        }
+//
+//        return sum / (n + m)
     }
 
     private fun getEdgeEditCost(edge1: Edge, edge2: Edge, subCost: Double): Double {
